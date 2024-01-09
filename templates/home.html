@@ -7,7 +7,7 @@
       <div class="col-md-8 px-0">
         <h1 class="display-4 font-italic">{{featured_blog.title}}</h1>
         <p class="lead my-3">{{featured_blog.short_description | truncatewords:25}}</p>
-        <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+        <p class="lead mb-0"><a href="{% url 'single_blog' featured_blog.slug %}" class="text-white font-weight-bold">Continue reading...</a></p>
       </div>
   </div>
   {% endif %}
@@ -21,7 +21,7 @@
       <div class="col-md-6">
         <div class="card border-0" >
           <div class="card-body">
-            <h3>{{featured_blog.title}}</h3>
+            <h3> <a href="{% url 'single_blog' featured_blog.slug %}" class="text-dark">{{featured_blog.title}}</a> </h3>
             <small class="mb-1 text-muted">{{featured_blog.created_at | timesince}} ago | {{featured_blog.author}}</small>
             <p class="card-text">{{featured_blog.short_description | truncatewords:25}}</p>
           </div>
@@ -39,7 +39,7 @@
         {% for recent_blog in recent_blogs %}
           <div class="card border-0" >
             <div class="card-body">
-              <h3>{{recent_blog.title}}</h3>
+              <h3> <a href="{% url 'single_blog' recent_blog.slug %}" class="text-dark">{{recent_blog.title}}</a></h3>
               <small class="mb-1 text-muted">{{recent_blog.created_at | timesince}} ago | {{recent_blog.author}}</small>
               <p class="card-text">{{recent_blog.short_description | truncatewords:25}}</p>
             </div>
@@ -47,20 +47,25 @@
         {% endfor %}
       </div>
       <!-- /.blog-main -->
-
+    
       <aside class="col-md-4 blog-sidebar">
+      {% for info in other_info %}
         <div class="p-3 mb-3 bg-light rounded">
-          <h4 class="font-italic">About</h4>
-          <p class="mb-0">Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+          <h4 class="font-italic">{{ info.title }}</h4>
+          <p class="mb-0"> {{ info.description }} </p>
         </div>
-
+      {% endfor %}
+      
+      {% if social_links %}
         <div class="p-3">
           <h4 class="font-italic">Follow Us</h4>
           <ol class="list-unstyled">
-            <li><a href="#">GitHub</a></li>
-            <li><a href="#">LinkedIn</a></li>
+          {% for social_link in social_links %}
+            <li><a href="{{social_link.link}}" target="_blank">{{social_link.title}}</a></li>
+          {% endfor %}
           </ol>
         </div>
+      {% endif %}
       </aside><!-- /.blog-sidebar -->
 
     </div><!-- /.row -->
