@@ -1,7 +1,10 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Q
 from blogs.models import Category, Blog
 from side_data.models import OtherInfo
+from .forms import RegistrationForm
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import auth
 
 def home(request):
     categories = Category.objects.all()
@@ -18,14 +21,6 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-def single_blog(request, slug):
-    blog = get_object_or_404(Blog, slug=slug, status='Published')
-    context = {
-        'blog' : blog
-    }
-    return render(request, 'single_blog.html', context)
-
-
 def search(request):
     keyword = request.GET.get('keyword')
     blogs = Blog.objects.filter(Q(title__icontains=keyword) | Q(short_description__icontains=keyword) | Q(blog_body__icontains=keyword) , status='Published')
@@ -34,3 +29,40 @@ def search(request):
         'keyword':keyword
     }
     return render(request, 'search.html', context)
+
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = RegistrationForm()
+    context = {
+        'form' : form,
+    }
+    return render(request, 'register.html', context)
+
+
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = auth.authenticate(username=username, password=password)
+            if user is not None:
+                auth.login(request, user)
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+    context = {
+        'form' : form
+    }
+    return render(request, 'login.html', context)
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect('home')
