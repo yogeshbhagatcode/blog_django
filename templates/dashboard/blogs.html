@@ -20,30 +20,34 @@
         <div class="row">
             <div class="col">
                 <div class="header-container">
-                    <h2>All Categories</h2>
-                    <a href="{% url 'add_category' %}" class="btn bg-dark text-light">Add New Category</a>
+                    <h2>All Blogs</h2>
+                    <a href="{% url 'add_blog' %}" class="btn bg-dark text-light">Add New Blog</a>
                 </div>
                 <table class="table table-hover">
                     <thead>
                       <tr>
                         <th>No</th>
-                        <th>Category Name</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Featured</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                    {% for category in categories %}
+                    {% for blog in blogs %}
                       <tr>
                         <td>{{forloop.counter}}</th>
-                        <td>{{category}}</td>
-                        <td>{{category.created_at}}</td>
-                        <td>{{category.updated_at}}</td>
+                        <td>{{blog.title}}</td>
+                        <td>{{blog.category}}</td>
+                        <td>{{blog.author}}</td>
+                        <td>{{blog.status}}</td>
+                        <td>{{blog.is_featured}}</td>
                         <td>
-                            <a href="{% url 'edit_category' category.id %}"><i class="fa fa-edit text-success"></i></a>
-                            &nbsp; &nbsp;
-                            <a href="{% url 'delete_category' category.id %}"><i class="fa fa-trash text-warning"></i></a>
+                            <a href="{% url 'edit_blog' blog.id %}"><i class="fa fa-edit text-success"></i></a>
+                            &nbsp;
+                            <a href="{% url 'delete_blog' blog.id %}"><i class="fa fa-trash text-warning"></i></a>
                         </td>
                       </tr>
                     {% endfor %}
