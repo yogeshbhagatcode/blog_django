@@ -21,7 +21,7 @@
                 <!-- Post content-->
                 <section class="mb-5">
                     <p class="fs-5 mb-4">{{blog.short_description}}</p>
-                    <p class="fs-5 mb-4">{{blog.blog_body}}</p>
+                    <p class="fs-5 mb-4">{{blog.blog_body | linebreaks}}</p>
                 </section>
                 <!-- Comment -->
                 <h3>Comments ({{comment_count}})</h3>

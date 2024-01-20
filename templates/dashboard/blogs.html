@@ -43,7 +43,7 @@
                         <td>{{blog.category}}</td>
                         <td>{{blog.author}}</td>
                         <td>{{blog.status}}</td>
-                        <td>{{blog.is_featured}}</td>
+                        <td class="text-center"> {% if blog.is_featured %}<i class="fa fa-check text-success"></i>{% else %}<i class="fa fa-times text-danger"></i>{% endif %} </td>
                         <td>
                             <a href="{% url 'edit_blog' blog.id %}"><i class="fa fa-edit text-success"></i></a>
                             &nbsp;
