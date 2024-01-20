@@ -1,8 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from blogs.models import Blog, Category
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .forms import CategoryForm, BlogForm
 from django.template.defaultfilters import slugify
+from .forms import UserAddForm, UserEditForm
 
 
 @login_required(login_url='login')
@@ -108,3 +110,48 @@ def delete_blog(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
     blog.delete()
     return redirect('blogs')
+
+
+def users(request):
+    users = User.objects.all()
+    context = {
+        'users' : users,
+    }
+    return render(request, 'dashboard/users.html', context)
+
+
+def add_user(request):
+    if request.method == 'POST':
+        form = UserAddForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('users')
+            
+    else:
+        form = UserAddForm()
+    context = {
+        'form' : form
+    }
+    return render(request, 'dashboard/add_user.html', context)
+
+
+def edit_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('users')
+    else:
+        form = UserEditForm(instance=user)
+    context = {
+        'form' : form,
+        'user' : user,
+    }
+    return render(request, 'dashboard/edit_user.html', context)    
+
+
+def delete_user(request,pk):
+    user = get_object_or_404(User, pk=pk)
+    user.delete()
+    return redirect('users')
