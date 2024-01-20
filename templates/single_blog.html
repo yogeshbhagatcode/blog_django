@@ -3,64 +3,97 @@
 {% block content %}
 
 <div class="container mt-5">
-  <div class="row">
-      <div class="col-lg-8">
-          <!-- Post content-->
-          <article>
-              <!-- Post header-->
-              <header class="mb-4">
-                  <!-- Post title-->
-                  <h1 class="fw-bolder mb-1">{{blog.title}}</h1>
-                  <!-- Post meta content-->
-                  <div class="text-muted fst-italic mb-2">Posted on {{blog.created_at}} by {{blog.author.username}}</div>
-                  <!-- Post category-->
-                  <a class="badge bg-warning text-decoration-none text-light" href="{% url 'blogs_by_category' blog.category.id %}">{{blog.category}}</a>
-              </header>
-              <!-- Preview image figure-->
-              <figure class="mb-4"><img class="img-fluid rounded" src="{{blog.image.url}}" alt="..." /></figure>
-              <!-- Post content-->
-              <section class="mb-5">
-                  <p class="fs-5 mb-4">{{blog.short_description}}</p>
-                  <p class="fs-5 mb-4">{{blog.blog_body}}</p>
-                  </section>
-          </article>
-      </div>
-      <!-- Side widgets-->
-      <div class="col-lg-4">
-          <!-- Search widget-->
-          <div class="card mb-4">
-          <!-- Categories widget-->
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Post content-->
+            <article>
+                <!-- Post header-->
+                <header class="mb-4">
+                    <!-- Post title-->
+                    <h1 class="fw-bolder mb-1">{{blog.title}}</h1>
+                    <!-- Post meta content-->
+                    <div class="text-muted fst-italic mb-2">Posted on {{blog.created_at}} by {{blog.author.username}}</div>
+                    <!-- Post category-->
+                    <a class="badge bg-warning text-decoration-none text-light" href="{% url 'blogs_by_category' blog.category.id %}">{{blog.category}}</a>
+                </header>
+                <!-- Preview image figure-->
+                <figure class="mb-4"><img class="img-fluid rounded" src="{{blog.image.url}}" alt="..." /></figure>
+                <!-- Post content-->
+                <section class="mb-5">
+                    <p class="fs-5 mb-4">{{blog.short_description}}</p>
+                    <p class="fs-5 mb-4">{{blog.blog_body}}</p>
+                </section>
+                <!-- Comment -->
+                <h3>Comments ({{comment_count}})</h3>
+                {% if comments %}
+                {% for comment in comments %}
+                <div class="card mt-1">
+                    <div class="card-body">
+                        <span class="card-text">
+                            {{comment}}
+                            <div>
+                                <small>By {{comment.user}} |</small>
+                                <small>{{comment.created_at | timesince}} ago</small>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <span>No comments yet</span>
+                {% endif %}
+                <br>
+                {% if user.is_authenticated %}
+                <div class="form-group">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <textarea name="comment" class="form-control" placeholder="Write your comment here"></textarea>
+                            <input type="submit" value="Submit" class="btn btn-primary mt-2">
+                        </div>
+                    </form>
+                </div>
+                {% else %}
+                <p>Please <span><a href="{% url 'login' %}">Login</a></span> to write a comment</p>
+                {% endif %}
+            </article>
+        </div>
+        <!-- Side widgets-->
+        <div class="col-lg-4">
+            <!-- Search widget-->
+            <div class="card mb-4">
+            <!-- Categories widget-->
 
-        {% if categories %}
-        <div class="card mb-4 p-3">
-            <h4 class="font-italic">Categories</h4>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <ul class="list-unstyled mb-0">
-                            {% for category in categories %}
-                            <li><a href="{% url 'blogs_by_category' category.id %}">{{category.category_name}}</a></li>
-                            {% endfor %}
-                        </ul>
+            {% if categories %}
+            <div class="card mb-4 p-3">
+                <h4 class="font-italic">Categories</h4>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                {% for category in categories %}
+                                <li><a href="{% url 'blogs_by_category' category.id %}">{{category.category_name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-          <!-- Side widget-->
-          {% if social_links %}
-          <div class="card mb-4 p-3">
-              <h4 class="font-italic">Follow Us</h4>
-              {% for social_link in social_links %}
-              <ol class="list-unstyled">
-                  <li><a href="{{social_link.link}}" target="_blank">{{social_link.title}}</a></li>
-              </ol>
-              {% endfor %}
-          </div>
-          {% endif %}
-      </div>
-  </div>
+            <!-- Side widget-->
+            {% if social_links %}
+            <div class="card mb-4 p-3">
+                <h4 class="font-italic">Follow Us</h4>
+                {% for social_link in social_links %}
+                <ol class="list-unstyled">
+                    <li><a href="{{social_link.link}}" target="_blank">{{social_link.title}}</a></li>
+                </ol>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}
