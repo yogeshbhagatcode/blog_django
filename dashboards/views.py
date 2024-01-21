@@ -7,7 +7,19 @@ from django.template.defaultfilters import slugify
 from .forms import UserAddForm, UserEditForm
 
 
+def permission_required(permission):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            if request.user.has_perm(permission):
+                return view_func(request, *args, **kwargs)
+            else:
+                return redirect('home')
+        return wrapper
+    return decorator
+
+
 @login_required(login_url='login')
+@permission_required('blogs.change_blog')
 def dashboard(request):
     category_count = Category.objects.all().count()
     blogs_count = Blog.objects.all().count()
@@ -19,10 +31,12 @@ def dashboard(request):
     return render(request, 'dashboard/dashboard.html', context)
 
 
+@permission_required('blogs.view_category')
 def categories(request):
     return render(request, 'dashboard/categories.html')
 
 
+@permission_required('blogs.add_category')
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -37,6 +51,7 @@ def add_category(request):
     return render(request, 'dashboard/add_category.html', context)
 
 
+@permission_required('blogs.change_category')
 def edit_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -53,12 +68,14 @@ def edit_category(request, pk):
     return render(request, 'dashboard/edit_category.html', context)
 
 
+@permission_required('blogs.delete_category')
 def delete_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.delete()
     return redirect('categories')
 
 
+@permission_required('blogs.view_blog')
 def blogs(request):
     blogs = Blog.objects.all()
     context = {
@@ -67,6 +84,7 @@ def blogs(request):
     return render(request, 'dashboard/blogs.html', context)
 
 
+@permission_required('blogs.add_blog')
 def add_blog(request):
     if request.method == 'POST':
         form = BlogForm(request.POST, request.FILES)
@@ -86,6 +104,7 @@ def add_blog(request):
     return render(request, 'dashboard/add_blog.html', context)
 
 
+@permission_required('blogs.change_blog')
 def edit_blog(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
     if request.method == 'POST':
@@ -106,12 +125,14 @@ def edit_blog(request, pk):
     return render(request, 'dashboard/edit_blog.html', context)
 
 
+@permission_required('blogs.delete_blog')
 def delete_blog(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
     blog.delete()
     return redirect('blogs')
 
 
+@permission_required('auth.view_user')
 def users(request):
     users = User.objects.all()
     context = {
@@ -120,6 +141,7 @@ def users(request):
     return render(request, 'dashboard/users.html', context)
 
 
+@permission_required('auth.add_user')
 def add_user(request):
     if request.method == 'POST':
         form = UserAddForm(request.POST)
@@ -135,6 +157,7 @@ def add_user(request):
     return render(request, 'dashboard/add_user.html', context)
 
 
+@permission_required('auth.change_user')
 def edit_user(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
@@ -151,6 +174,7 @@ def edit_user(request, pk):
     return render(request, 'dashboard/edit_user.html', context)    
 
 
+@permission_required('auth.delete_user')
 def delete_user(request,pk):
     user = get_object_or_404(User, pk=pk)
     user.delete()

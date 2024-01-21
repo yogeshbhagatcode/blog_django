@@ -54,7 +54,10 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             if user is not None:
                 auth.login(request, user)
-            return redirect('dashboard')
+            if request.user.has_perm('auth.view_user'):
+                return redirect('dashboard')
+            else:
+                return redirect('home')
     else:
         form = AuthenticationForm()
     context = {
