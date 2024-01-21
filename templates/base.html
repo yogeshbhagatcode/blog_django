@@ -10,8 +10,27 @@
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+
+    <!-- CSS for Form size -->
+    <style>
+      @media (max-width: 767px) {
+          /* Styles for small screens */
+          form {
+              width: auto; /* or any other style for small screens */
+          }
+      }
+  
+      @media (min-width: 768px) {
+          /* Styles for medium and larger screens */
+          form {
+              width: 500px; /* Your specified width for medium and larger screens */
+          }
+      }
+  </style>
+
   </head>
 <body>
+  
     <div class="container">
       <header class="blog-header py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
